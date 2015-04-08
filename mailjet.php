@@ -1223,6 +1223,7 @@ class Mailjet extends Module
         if (!isset($this->account->{'TOKEN_'.$this->context->employee->id}) ||
             $this->account->{'IP_'.$this->context->employee->id} != $_SERVER['REMOTE_ADDR'] ||
             ($this->account->{'TIMESTAMP_'.$this->context->employee->id} <= strtotime('-1 day')))
+<<<<<<< HEAD
         {
             $this->account->{'IP_'.$this->context->employee->id} = $_SERVER['REMOTE_ADDR'];
             $this->account->{'TIMESTAMP_'.$this->context->employee->id} = strtotime('now');
@@ -1242,6 +1243,27 @@ class Mailjet extends Module
                 $this->updateAccountSettings();
             }
             if ($this->account->{'MASTER_LIST_SYNCHRONIZED'} == 0){
+=======
+		{
+			$this->account->{'IP_'.$this->context->employee->id} = $_SERVER['REMOTE_ADDR'];
+			$this->account->{'TIMESTAMP_'.$this->context->employee->id} = strtotime('now');
+			$api = MailjetTemplate::getApi(false);
+			$params = array(
+				'AllowedAccess' => 'campaigns,contacts,stats,pricing,account,reports',
+				'method'	 	=> 'JSON',
+				'APIKeyALT' 	=> $api->getAPIKey(),
+				'TokenType'		=> 'iframe',
+				'IsActive'		=> true,
+				'SentData'		=> Tools::jsonEncode(array('plugin' => 'prestashop-3.0')),
+			);
+			$api->apitoken($params);
+			$response = $api->getResponse();
+            if (!empty($response->Count) && ($response->Count > 0)){
+				$this->account->{'TOKEN_'.$this->context->employee->id} = $response->Data[0]->Token;
+				$this->updateAccountSettings();
+			}
+			if ($this->account->{'MASTER_LIST_SYNCHRONIZED'} == 0){
+>>>>>>> 256d6504d2059cef1db57633b6341d9d02b30fa0
                 $this->initalSynchronize();
             }
         }
